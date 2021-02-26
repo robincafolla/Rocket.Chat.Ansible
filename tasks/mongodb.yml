@@ -86,6 +86,14 @@
       host: "{{ rocket_chat_mongodb_server }}"
       state: started
 
+  - name: set a fact indicating replSets were initialized
+    set_fact:
+      repl_sets_initiated_string: '"ok" : 1,'
+
+  - name: set a fact indicating replSets were already initialized
+    set_fact:
+      repl_sets_already_initiated_string: '"errmsg" : "already initialized",'
+
   - name: Ensure the MongoDB replSets have been initiated
     shell: >-
       mongo --quiet --eval
@@ -99,8 +107,7 @@
     register: replSet_result
     changed_when:
       - not (replSet_result.stdout is search(' Object'))
-      - ('ok' in (replSet_result.stdout | from_json))
-      - (((replSet_result.stdout | from_json).ok | int) == 1)
+      - ((repl_sets_initiated_string in replSet_result.stdout) or (repl_sets_already_initiated_string in replSet_result.stdout))
 
   - name: Reset replSet config when /etc/hosts changes
     shell: >-
