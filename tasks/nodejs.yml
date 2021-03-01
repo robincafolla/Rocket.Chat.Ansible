@@ -16,7 +16,7 @@
   npm:
     name: n
     global: true
-    executable: "{{ rocket_chat_npm_dist }}"
+#    executable: "{{ rocket_chat_npm_dist }}"
   when: ('stat' in dist_npm_bin)
          and (dist_npm_bin.stat.exists | bool)
 
