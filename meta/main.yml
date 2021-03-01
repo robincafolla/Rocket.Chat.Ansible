@@ -23,8 +23,9 @@ galaxy_info:
         - bionic
     - name: Debian
       versions:
-        - jessie
+        - buster
         - stretch
+        - buster
   galaxy_tags:
     - cloud
     - database

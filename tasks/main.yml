@@ -80,7 +80,7 @@
   - name: "Configure /etc/hosts"
     lineinfile:
       dest: /etc/hosts
-      line:  "{{ item.line }}"
+      line: "{{ item.line }}"
       regexp: "{{ item.regexp }}"
       insertafter: "{{ item.insertafter | default(omit) }}"
       insertbefore: "{{ item.insertbefore | default(omit) }}"
@@ -98,10 +98,6 @@
         insertafter: '^127\.0\.0\.1'
         backrefs: no
     register: hosts_change_result
-
-  - import_tasks: mongodb.yml
-    when: (rocket_chat_include_mongodb | bool)
-    tags: mongodb
 
   - name: Redefine rocket_chat_dep_packages to add dist specific packages if needed
     set_fact:
@@ -126,6 +122,10 @@
     until: (dep_install_result is succeeded)
     retries: 2
     tags: packages
+
+  - import_tasks: mongodb.yml
+    when: (rocket_chat_include_mongodb | bool)
+    tags: mongodb
 
   - import_tasks: nodejs.yml
     tags: nodejs
@@ -164,7 +164,7 @@
       register: get_pgp_asc_result
       until: (get_pgp_asc_result is succeeded)
       retries: 2
-    when: (rocket_Chat_tarball_check_pgp | bool)
+    when: (rocket_chat_tarball_check_pgp | bool)
     tags: pgp
 
   - name: Fetch the Rocket.Chat binary tarball
@@ -196,7 +196,7 @@
                  rocket.chat-{{ rocket_chat_version }}.tgz
     args:
       chdir: "{{ rocket_chat_application_path }}"
-    when: (rocket_Chat_tarball_check_pgp | bool)
+    when: (rocket_chat_tarball_check_pgp | bool)
     changed_when: false
     tags: pgp
 
