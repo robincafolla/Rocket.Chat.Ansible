@@ -49,6 +49,7 @@ rocket_chat_mongodb_database: rocketchat
 rocket_chat_mongodb_use_tls: false
 rocket_chat_mongodb_user: ~
 rocket_chat_mongodb_password: ~
+rocket_chat_mongodb_replica_set: false
 
 # nginx settings
 rocket_chat_include_nginx: true

@@ -2,6 +2,8 @@
 Description=Rocket.Chat Server
 After=syslog.target
 After=network.target
+After=nginx.target
+After=mongod.target
 
 [Service]
 Type=simple
@@ -10,8 +12,13 @@ StandardOutput=syslog
 SyslogIdentifier=RocketChat
 User={{ rocket_chat_service_user }}
 Group={{ rocket_chat_service_group }}
+{% if rocket_chat_mongodb_replica_set -%}
+Environment=MONGO_URL=mongodb://{{ rocket_chat_mongodb_URI }}?authSource={{ rocket_chat_mongodb_database }}&replicaSet={{ rocket_chat_mongodb_replica_set }}
+Environment=MONGO_OPLOG_URL=mongodb://{{ rocket_chat_mongodb_user }}:{{ rocket_chat_mongodb_password }}@{{ rocket_chat_mongodb_server }}:{{ rocket_chat_mongodb_port }}/local?authSource={{ rocket_chat_mongodb_database }}&replicaSet={{ rocket_chat_mongodb_replica_set }}
+{% else -%}
 Environment=MONGO_URL=mongodb://{{ rocket_chat_mongodb_URI }}
-Environment=MONGO_OPLOG_URL=mongodb://{{ rocket_chat_mongodb_server }}:{{ rocket_chat_mongodb_port }}/local
+Environment=MONGO_OPLOG_URL=mongodb://{{ rocket_chat_mongodb_user }}:{{ rocket_chat_mongodb_password }}@{{ rocket_chat_mongodb_server }}:{{ rocket_chat_mongodb_port }}/local
+{% endif %}
 Environment=ROOT_URL=https://{{ rocket_chat_service_host }}
 Environment=PORT={{ rocket_chat_service_port }}
 Environment=DEPLOY_PLATFORM=ansible
